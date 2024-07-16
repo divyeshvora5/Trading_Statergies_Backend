@@ -28,11 +28,11 @@ async function fetchStockData(symbol, interval = '5m', periods) {
     const period2 = isMarketOpen() ? alignToMarket5Minutes(now) : getMarketCloseTime();
 
 //uncomment during live market
- // const period1 = new Date(period2.getTime() - (periods * 5 * 60 * 1000)); // 5 minutes candles
+ const period1 = new Date(period2.getTime() - (periods * 5 * 60 * 1000)); // 5 minutes candles
 
 
 //for debug after market close
-const period1 = new Date(calculatePasteDate().getTime() - (periods * 5 * 60 * 1000)); // 5 minutes candles
+// const period1 = new Date(calculatePasteDate().getTime() - (periods * 5 * 60 * 1000)); // 5 minutes candles
 
 
     try {

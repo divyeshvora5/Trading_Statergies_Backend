@@ -24,8 +24,7 @@ async function processStockData(symbol, config) {
 
             // Filter for recent buy signals
             const recentSignal = hasRecentSignal(enrichedData,
-                //  config.lookbackPeriod, 
-                10
+                 config.lookbackPeriod, 
             );
 
             return { symbol, enrichedData, recentSignal };
@@ -49,7 +48,7 @@ async function fetchAndFilterStocks({ config, stocks }) {
         } else {
             const { enrichedData, symbol, recentSignal } = result.value;
             console.log('symbol', symbol)
-            console.table(enrichedData, ['date', 'open', 'high', 'low', 'close', 'crossover', 'trade']);
+            // console.table(enrichedData, ['date', 'open', 'high', 'low', 'close', 'crossover', 'trade']);
             if (recentSignal && typeof recentSignal === 'object') {
                 console.log(`Stock with recent signal: ${symbol}`);
                 const stockDocument = new StockData({

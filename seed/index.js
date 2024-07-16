@@ -32,7 +32,7 @@ const seed = async () => {
             fetchInterval: 5 * 60 * 1000 + 5000, // 5 minutes and 5 seconds
             marketOpenTime: { hour: 9, minute: 15 },
             marketCloseTime: { hour: 15, minute: 30 },
-            intervalMinutes: 6,
+            intervalMinutes: 5,
             lookbackPeriod: 2
         });
 

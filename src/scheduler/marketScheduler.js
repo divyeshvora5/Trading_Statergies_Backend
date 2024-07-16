@@ -29,10 +29,10 @@ function scheduleFetch({ fetchFunction }) {
     // Schedule the initial fetch
     const initialDelay = nextFetchTime - new Date();
     setTimeout(() => {
-        fetchFunction();
         // Set up the recurring schedule
         const rule = new schedule.RecurrenceRule();
         rule.minute = new schedule.Range(0, 59, intervalMinutes);
+        rule.second = 5;
 
         schedule.scheduleJob(rule, async () => {
             const now = new Date();
@@ -46,7 +46,8 @@ function scheduleFetch({ fetchFunction }) {
                 await StockData.deleteMany();
                 await fetchFunction();
             } else {
-                console.log('Market is closed. Skipping fetch.');
+                await fetchFunction();
+                // console.log('Market is closed. Skipping fetch.');
             }
         });
     }, initialDelay);
