@@ -18,7 +18,10 @@ function getMarketCloseTime() {
     return marketClose;
 }
 
+const catchAsyncError = func => (req, res, next) => Promise.resolve(func(req, res, next)).catch(err => next(err))
+
 module.exports = {
     isMarketOpen,
-    getMarketCloseTime
+    getMarketCloseTime,
+    catchAsyncError
 };

@@ -11,6 +11,11 @@ const StockData = require('./src/models/StockData');
 const StocksSymbol = require('./src/models/StocksSymbol');
 const { scheduleFetch } = require('./src/scheduler/marketScheduler');
 const { configureSocket, getSelectedStock } = require('./src/events/socket');
+const { errorHandler } = require('./src/middlewares/error-handling-middleware');
+
+
+//routes
+const stockRoutes = require("./src/routes/StocksRoutes");
 
 
 const whiteList = [
@@ -40,7 +45,7 @@ const corsOptions = {
     optionsSuccessStatus: 200,
 };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 
 async function startFetchingData() {
@@ -63,9 +68,16 @@ async function startFetchingData() {
 }
 
 
-//end section
+//routes
+
+
+app.use("/api/v1/stocks", stockRoutes);
+
+
 
 configureSocket(io)
+
+app.use(errorHandler);
 
 
 db.once('open', async () => {
