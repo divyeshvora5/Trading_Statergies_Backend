@@ -1,0 +1,20 @@
+{
+  "name": "tradingstatergybackend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "seed": "node seed/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "mongoose": "^8.5.1",
+    "node-schedule": "^2.1.1",
+    "technicalindicators": "^3.1.0",
+    "yahoo-finance2": "^2.11.3"
+  }
+}
