@@ -21,3 +21,5 @@ function calculateCCI(data, length) {
 }
 
 module.exports = { calculateCCI };
+
+

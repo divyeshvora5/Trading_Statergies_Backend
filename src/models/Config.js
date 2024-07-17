@@ -19,7 +19,8 @@ const configSchema = new mongoose.Schema({
     marketCloseTime: {
         hour: Number,
         minute: Number
-    }
+    },
+    defaultIndices: String
 });
 
 const Config = mongoose.model('Config', configSchema);

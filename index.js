@@ -6,11 +6,11 @@ const cors = require("cors");
 
 const db = require("./src/config/DbConnect");
 const { getConfig } = require('./src/config/fetchConfig');
-const { fetchAndFilterStocks } = require('./src/data/stockFilter');
+const {  startFetchingData } = require('./src/data/stockFilter');
 const StockData = require('./src/models/StockData');
 const StocksSymbol = require('./src/models/StocksSymbol');
 const { scheduleFetch } = require('./src/scheduler/marketScheduler');
-const { configureSocket, getSelectedStock } = require('./src/events/socket');
+const { configureSocket } = require('./src/events/socket');
 const { errorHandler } = require('./src/middlewares/error-handling-middleware');
 
 
@@ -48,32 +48,8 @@ const corsOptions = {
 // app.use(cors(corsOptions));
 
 
-async function startFetchingData() {
-
-    const count = global.config.count;
-    const pageSize =  global.config.batchSize;
-
-    const totalPages = Math.ceil(count / pageSize);
-
-    for(let i = 1; i <= totalPages; i++) {
-
-        const stocks = await StocksSymbol.find({}).skip((i - 1) * pageSize).limit(pageSize).lean();
-        const stocksSymbols = stocks.map(stock => stock.symbol);
-
-        await fetchAndFilterStocks({ config: global.config, stocks: stocksSymbols });
-    }
-
-    getSelectedStock();
-
-}
-
-
 //routes
-
-
 app.use("/api/v1/stocks", stockRoutes);
-
-
 
 configureSocket(io)
 
@@ -83,8 +59,8 @@ app.use(errorHandler);
 db.once('open', async () => {
     await initialize();
     server.listen(process.env.PORT, () => {
-		console.log(`server is running on port ${process.env.PORT}`);
-	});
+        console.log(`server is running on port ${process.env.PORT}`);
+    });
 });
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));

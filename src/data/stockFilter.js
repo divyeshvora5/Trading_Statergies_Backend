@@ -1,4 +1,6 @@
+const { getSelectedStock } = require("../events/socket");
 const StockData = require("../models/StockData");
+const StocksSymbol = require("../models/StocksSymbol");
 const SSLCciStrategy = require("../strategies/sslCciStrategy");
 const { fetchStockData } = require("./stockDataFetcher");
 
@@ -16,6 +18,7 @@ function hasRecentSignal(data, lookbackPeriod) {
 async function processStockData(symbol, config) {
     try {
         const stockData = await fetchStockData(symbol, '5m', config.requiredCandles * 10, config);
+        
 
         if (stockData.length) {
             const strategy = new SSLCciStrategy(config);
@@ -24,7 +27,7 @@ async function processStockData(symbol, config) {
 
             // Filter for recent buy signals
             const recentSignal = hasRecentSignal(enrichedData,
-                 config.lookbackPeriod, 
+                config.lookbackPeriod,
             );
 
             return { symbol, enrichedData, recentSignal };
@@ -50,6 +53,7 @@ async function fetchAndFilterStocks({ config, stocks }) {
             console.log('symbol', symbol)
             // console.table(enrichedData, ['date', 'open', 'high', 'low', 'close', 'crossover', 'trade']);
             if (recentSignal && typeof recentSignal === 'object') {
+                console.log('recentSignal', recentSignal)
                 console.log(`Stock with recent signal: ${symbol}`);
                 const stockDocument = new StockData({
                     symbol,
@@ -64,4 +68,26 @@ async function fetchAndFilterStocks({ config, stocks }) {
 
     return results;
 }
-module.exports = { fetchAndFilterStocks }
+
+async function startFetchingData() {
+
+    const count = global.config.count;
+    const pageSize = global.config.batchSize;
+
+    const totalPages = Math.ceil(count / pageSize);
+
+    const query = global.config.defaultIndices ? { indices: global.config.defaultIndices } : {};
+
+    for (let i = 1; i <= totalPages; i++) {
+
+        const stocks = await StocksSymbol.find(query).skip((i - 1) * pageSize).limit(pageSize).lean();
+        const stocksSymbols = stocks.map(stock => stock.symbol);
+
+        await fetchAndFilterStocks({ config: global.config, stocks: stocksSymbols });
+    }
+
+    getSelectedStock();
+
+}
+
+module.exports = { fetchAndFilterStocks, startFetchingData }

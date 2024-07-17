@@ -10,6 +10,16 @@ const calculatePasteDate = () => {
     return futureDate;
 };
 
+const getYesterdayAtTime = (hours, minutes) => {
+    const now = new Date();
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+    yesterday.setHours(hours, minutes, 0, 0);
+    return yesterday;
+  };
+
+  //end section
+
 
 const alignToMarket5Minutes = (date) => {
     const marketOpen = new Date(date);
@@ -23,9 +33,15 @@ const alignToMarket5Minutes = (date) => {
 
 async function fetchStockData(symbol, interval = '5m', periods) {
 
-    const now = new Date();
+    // const now = new Date();
 
-    const period2 = isMarketOpen() ? alignToMarket5Minutes(now) : getMarketCloseTime();
+    const now = getYesterdayAtTime(15,30);
+
+
+    // const period2 = isMarketOpen() ? alignToMarket5Minutes(now) : getMarketCloseTime();
+
+    const period2 = alignToMarket5Minutes(now);
+
 
 //uncomment during live market
  const period1 = new Date(period2.getTime() - (periods * 5 * 60 * 1000)); // 5 minutes candles

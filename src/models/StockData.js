@@ -7,7 +7,8 @@ const stockDataSchema = new mongoose.Schema({
     high: Number,
     low: Number,
     close: Number,
-    volume: Number
+    volume: Number,
+    trade: String
 });
 
 const StockData = mongoose.model('StockData', stockDataSchema);

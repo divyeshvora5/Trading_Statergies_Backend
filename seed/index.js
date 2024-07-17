@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { default: yahooFinance } = require('yahoo-finance2');
+// const { default: yahooFinance } = require('yahoo-finance2');
 const db = require('../src/config/DbConnect');
 const Config = require('../src/models/Config');
 const StocksSymbol = require('../src/models/StocksSymbol');
@@ -52,7 +52,7 @@ const seed = async () => {
 
 
         await Config.deleteMany();
-        await StocksSymbol.deleteMany();
+        // await StocksSymbol.deleteMany();
 
         const config = new Config({
             period: 13,
@@ -72,7 +72,7 @@ const seed = async () => {
 
         await config.save();
 
-        await StocksSymbol.insertMany(remove_dublicates)
+        // await StocksSymbol.insertMany(remove_dublicates)
         console.log('Configuration initialized');
         process.exit(0);
     } catch (err) {
