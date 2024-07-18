@@ -64,9 +64,9 @@ const seed = async () => {
             cciLookbackBefore: 3,
             cciLookbackAfter: 3,
             fetchInterval: 5 * 60 * 1000 + 5000, // 5 minutes and 5 seconds
-            marketOpenTime: { hour: 9, minute: 15 },
+            marketOpenTime: { hour: 9, minute: 16 },
             marketCloseTime: { hour: 15, minute: 30 },
-            intervalMinutes: 5,
+            intervalMinutes: 6,
             lookbackPeriod: 2
         });
 

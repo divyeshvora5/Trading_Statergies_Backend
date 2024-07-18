@@ -19,7 +19,6 @@ async function processStockData(symbol, config) {
     try {
         const stockData = await fetchStockData(symbol, '5m', config.requiredCandles * 10, config);
         
-
         if (stockData.length) {
             const strategy = new SSLCciStrategy(config);
             const enrichedData = strategy.apply(stockData);
@@ -51,7 +50,7 @@ async function fetchAndFilterStocks({ config, stocks }) {
         } else {
             const { enrichedData, symbol, recentSignal } = result.value;
             console.log('symbol', symbol)
-            // console.table(enrichedData, ['date', 'open', 'high', 'low', 'close', 'crossover', 'trade']);
+            console.table(enrichedData.map(ele => ({...ele, date: new Date(ele.date).toLocaleString()})), ['date', 'open', 'high', 'low', 'close', 'crossover', 'trade']);
             if (recentSignal && typeof recentSignal === 'object') {
                 console.log('recentSignal', recentSignal)
                 console.log(`Stock with recent signal: ${symbol}`);

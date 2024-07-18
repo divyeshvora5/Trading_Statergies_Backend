@@ -33,18 +33,20 @@ const alignToMarket5Minutes = (date) => {
 
 async function fetchStockData(symbol, interval = '5m', periods) {
 
-    // const now = new Date();
+    const now = new Date();
 
-    const now = getYesterdayAtTime(15,30);
-
-
-    // const period2 = isMarketOpen() ? alignToMarket5Minutes(now) : getMarketCloseTime();
-
-    const period2 = alignToMarket5Minutes(now);
+    // const now = getYesterdayAtTime(15,30);
 
 
-//uncomment during live market
- const period1 = new Date(period2.getTime() - (periods * 5 * 60 * 1000)); // 5 minutes candles
+    const period2 = isMarketOpen() ? now : getMarketCloseTime();
+
+
+
+    // const period2 = alignToMarket5Minutes(now);
+    
+    
+    //uncomment during live market
+    const period1 = new Date(period2.getTime() - (periods * 5 * 60 * 1000)); // 5 minutes candles
 
 
 //for debug after market close
@@ -58,7 +60,7 @@ async function fetchStockData(symbol, interval = '5m', periods) {
             interval: interval
         };
 
-        const result = await yahooFinance._chart(symbol, queryOptions);
+        const result = await yahooFinance.chart(symbol, queryOptions);
 
         if (result && result.quotes) {
             const candles = result.quotes.map(quote => ({

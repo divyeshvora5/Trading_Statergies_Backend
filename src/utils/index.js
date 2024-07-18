@@ -24,7 +24,7 @@ const catchAsyncError = func => (req, res, next) => Promise.resolve(func(req, re
 const getYesterdayAtTime = (hours, minutes) => {
     const now = new Date();
     const yesterday = new Date(now);
-    yesterday.setDate(now.getDate() - 1);
+    yesterday.setDate(now.getDate() - 2);
     yesterday.setHours(hours, minutes, 0, 0);
     return yesterday;
   };

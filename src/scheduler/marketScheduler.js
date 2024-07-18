@@ -1,5 +1,6 @@
 const schedule = require('node-schedule');
 const StockData = require('../models/StockData');
+const { scheduleJob } = require('../utils/jobScheduler');
 
 function getNextFetchTime(marketOpenTime, intervalMinutes) {
     const now = new Date();
@@ -22,35 +23,42 @@ function scheduleFetch({ fetchFunction }) {
     // Fetch data immediately
     fetchFunction();
 
-    // Calculate the next fetch time
-    const nextFetchTime = getNextFetchTime(marketOpenTime, intervalMinutes);
-    console.log(`Next fetch scheduled at: ${nextFetchTime}`);
+    scheduleJob({
+        initialHour: marketOpenTime.hour,
+        initialMinute: marketOpenTime.minute,
+        intervalMinutes,
+        jobFunction: fetchFunction
+    })
 
-    // Schedule the initial fetch
-    const initialDelay = nextFetchTime - new Date();
-    setTimeout(() => {
-        // Set up the recurring schedule
-        const rule = new schedule.RecurrenceRule();
-        rule.minute = new schedule.Range(0, 59, intervalMinutes);
-        rule.second = 5;
+    // // Calculate the next fetch time
+    // const nextFetchTime = getNextFetchTime(marketOpenTime, intervalMinutes);
+    // console.log(`Next fetch scheduled at: ${nextFetchTime}`);
 
-        schedule.scheduleJob(rule, async () => {
-            const now = new Date();
-            const marketOpen = new Date();
-            marketOpen.setHours(marketOpenTime.hour, marketOpenTime.minute, 0, 0);
+    // // Schedule the initial fetch
+    // const initialDelay = nextFetchTime - new Date();
+    // setTimeout(() => {
+    //     // Set up the recurring schedule
+    //     const rule = new schedule.RecurrenceRule();
+    //     rule.minute = new schedule.Range(0, 59, intervalMinutes);
+    //     // rule.second = 5;
 
-            const marketClose = new Date();
-            marketClose.setHours(marketCloseTime.hour, marketCloseTime.minute, 0, 0);
+    //     schedule.scheduleJob(rule, async () => {
+    //         const now = new Date();
+    //         const marketOpen = new Date();
+    //         marketOpen.setHours(marketOpenTime.hour, marketOpenTime.minute, 0, 0);
 
-            if (now >= marketOpen && now <= marketClose) {
-                await StockData.deleteMany();
-                await fetchFunction();
-            } else {
-                await fetchFunction();
-                // console.log('Market is closed. Skipping fetch.');
-            }
-        });
-    }, initialDelay);
+    //         const marketClose = new Date();
+    //         marketClose.setHours(marketCloseTime.hour, marketCloseTime.minute, 0, 0);
+
+    //         if (now >= marketOpen && now <= marketClose) {
+    //             await StockData.deleteMany();
+    //             await fetchFunction();
+    //         } else {
+    //             await fetchFunction();
+    //             // console.log('Market is closed. Skipping fetch.');
+    //         }
+    //     });
+    // }, initialDelay);
 }
 
 module.exports = { scheduleFetch };
